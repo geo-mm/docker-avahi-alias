@@ -12,7 +12,11 @@ Uses the host dbus socket to add avahi cname records.
 git clone https://github.com/geo-mm/docker-avahi-alias.git
 cd docker-avahi-alias
 docker build -t [your_tag_name] .
-docker run -d --restart=always --privileged --name [your_container_name] -v /var/run/dbus/system_bus_socket:/var/run/dbus/system_bus_socket -v [your_configuration_directory]:/etc/avahi/service [your_tag_name]
+docker run -d --restart=always --privileged \
+--name [your_container_name] \
+-v /var/run/dbus/system_bus_socket:/var/run/dbus/system_bus_socket \
+-v [your_configuration_directory]:/etc/avahi/service \
+[your_tag_name]
 
 ```
 
