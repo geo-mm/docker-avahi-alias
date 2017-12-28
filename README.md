@@ -12,9 +12,11 @@ Uses the host dbus socket to add avahi cname records.
 git clone https://github.com/geo-mm/docker-avahi-alias.git
 cd docker-avahi-alias
 docker build -t [your_tag_name] .
-docker run -d --privileged -v /var/run/dbus/system_bus_socket:/var/run/dbus/system_bus_socket -v [your_configure_directory]:/etc/avahi/service [your_tag_name]
+docker run -d --restart=always --privileged --name [your_container_name] -v /var/run/dbus/system_bus_socket:/var/run/dbus/system_bus_socket -v [your_configuration_directory]:/etc/avahi/service [your_tag_name]
 
 ```
+
+docker run -d --restart=always -privileged --name avahi-alias -v /opt/avahi-alias/service:/etc/avahi/service -v /var/run/dbus/system_bus_socket:/var/run/dbus/system_bus_socket geo/avahi-alias:latest
 
 You should be able to name the config file as you wish, and format is plain text with new lines.
 
@@ -24,5 +26,5 @@ name2.local
 name3.local
 ```
 
-The script will generate a file called 'default' with `example.local` in `[your_configure_directory]` if there is no file in `[your_configure_directory]`
+The script will generate a file as 'default' with a line `example.local` in `[your_configuration_directory]` if there is no file in `[your_configuration_directory]`
 
