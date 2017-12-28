@@ -25,6 +25,7 @@ TTL = dbus.UInt32(RAW_TTL)
 # Got these from /usr/include/avahi-common/defs.h
 CLASS_IN = dbus.UInt16(0x01)
 TYPE_CNAME = dbus.UInt16(0x05)
+SERVICE_PATH = "/etc/avahi/service"
 
 class AvahiPublisher(object):
 
@@ -67,13 +68,24 @@ class AvahiPublisher(object):
         return ''.join( '%s%s' % enc(p) for p in name.split('.') if p ) + '\0'
 
 if __name__ == '__main__':
-    import time, sys, locale
-    if len(sys.argv)<2:
-        script_name = sys.argv[0]
-        print "Usage: %s hostname.local [hostname2.local] [hostname3.local]" % script_name
-        sys.exit(1)
-        
-    publisher = AvahiPublisher(sys.argv[1:])
+    import time, sys, locale, os
+
+    files = os.listdir(SERVICE_PATH)
+
+    if len(files) <= 0:
+        with open('{0}/default'.format(SERVICE_PATH), 'w') as f:
+            f.write('example.local')
+            f.close()
+
+    services = []
+
+    for filename in os.listdir(SERVICE_PATH):
+        with open('{0}/{1}'.format(SERVICE_PATH, filename), 'r') as f:
+            for line in f:
+                line = line.partition('#')[0]
+                services.append(line.rstrip())
+
+    publisher = AvahiPublisher(services)
     publisher.publish_all()
 
     try:
